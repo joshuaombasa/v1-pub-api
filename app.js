@@ -15,7 +15,7 @@ mongoose.connect(config.MONGO_URI)
         .catch(error => logger.error(error.message))
 
 const app = express()
-
+app.use(express.json())
 
 
 app.use(middleware.requestLogger)

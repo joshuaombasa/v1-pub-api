@@ -15,7 +15,7 @@ const getTokenFrom  =(request) => {
 
 booksRouter.get('/', async (request,response,next) => {
     try {
-        const books = await Book.find({}).populate({username:'1', name: '1'})
+        const books = await Book.find({}).populate('author',{username:'1', name: '1'})
         response.json(books)
     } catch (exception) {
         next(exception)
@@ -38,26 +38,50 @@ booksRouter.get('/:id', async (request,response,next) => {
 booksRouter.post('/', async (request,response,next) => {
     const {name, price} = request.body
 
-    const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+    // const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
     
-    if(!decodedToken.id) {
-        response.status(401).json({error: 'token invalid'})
-    }
+    // if(!decodedToken.id) {
+    //     response.status(401).json({error: 'token invalid'})
+    // }
 
     const book = new Book({
         name,
         price
     })
     try {
-        const author = await Author.find(decodedToken.id)
+        // const author = await Author.find(decodedToken.id)
         const savedBook = await book.save()
-        author.books = author.books.concat(savedBook._id)
-        await author.save()
+        // author.books = author.books.concat(savedBook._id)
+        // await author.save()
         response.status(201).json(savedBook)
     } catch (exception) {
         next(exception)
     }
 })
+
+// booksRouter.post('/', async (request,response,next) => {
+//     const {name, price} = request.body
+
+//     const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+    
+//     if(!decodedToken.id) {
+//         response.status(401).json({error: 'token invalid'})
+//     }
+
+//     const book = new Book({
+//         name,
+//         price
+//     })
+//     try {
+//         const author = await Author.find(decodedToken.id)
+//         const savedBook = await book.save()
+//         author.books = author.books.concat(savedBook._id)
+//         await author.save()
+//         response.status(201).json(savedBook)
+//     } catch (exception) {
+//         next(exception)
+//     }
+// })
 
 booksRouter.put('/:id', async (request,response,next) => {
     const id = request.params.id
